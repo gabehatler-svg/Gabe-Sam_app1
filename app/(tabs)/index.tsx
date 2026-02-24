@@ -1,135 +1,86 @@
-import { Ionicons } from "@expo/vector-icons";
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.greeting}>Welcome Back 👋</Text>
-        <Text style={styles.username}>Gabe and Sam 
-        </Text>
-      </View>
+    <LinearGradient
+      colors={["#4f46e5", "#9333ea", "#ec4899"]}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.content}>
+          <Text style={styles.title}>Welcome</Text>
+          <Text style={styles.names}>Gabe & Sam 🚀</Text>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#888" />
-        <TextInput
-          placeholder="Search..."
-          placeholderTextColor="#888"
-          style={styles.searchInput}
-        />
-      </View>
+          <View style={styles.card}>
+            <Text style={styles.cardText}>
+              Your app is officially live.
+            </Text>
+            <Text style={styles.cardSub}>
+              Let’s build something awesome.
+            </Text>
+          </View>
 
-      {/* Featured Card */}
-      <View style={styles.featuredCard}>
-        <Text style={styles.featuredTitle}>🔥 Featured</Text>
-        <Text style={styles.featuredText}>
-          Build something amazing today.
-        </Text>
-      </View>
-
-      {/* Quick Actions */}
-      <Text style={styles.sectionTitle}>Quick Actions</Text>
-
-      <View style={styles.actionsContainer}>
-        <Pressable style={styles.actionCard}>
-          <Ionicons name="person" size={24} color="white" />
-          <Text style={styles.actionText}>Profile</Text>
-        </Pressable>
-
-        <Pressable style={styles.actionCard}>
-          <Ionicons name="settings" size={24} color="white" />
-          <Text style={styles.actionText}>Settings</Text>
-        </Pressable>
-
-        <Pressable style={styles.actionCard}>
-          <Ionicons name="star" size={24} color="white" />
-          <Text style={styles.actionText}>Favorites</Text>
-        </Pressable>
-
-        <Pressable style={styles.actionCard}>
-          <Ionicons name="notifications" size={24} color="white" />
-          <Text style={styles.actionText}>Alerts</Text>
-        </Pressable>
-      </View>
-
-    </ScrollView>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Get Started</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0f172a",
-    padding: 20,
   },
-  header: {
-    marginTop: 40,
-    marginBottom: 20,
+  safe: {
+    flex: 1,
   },
-  greeting: {
-    fontSize: 18,
-    color: "#94a3b8",
+  content: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
   },
-  username: {
-    fontSize: 28,
+  title: {
+    fontSize: 36,
+    fontWeight: "300",
+    color: "white",
+  },
+  names: {
+    fontSize: 42,
     fontWeight: "bold",
     color: "white",
+    marginBottom: 40,
   },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#1e293b",
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    borderRadius: 12,
-    marginBottom: 25,
-  },
-  searchInput: {
-    marginLeft: 10,
-    flex: 1,
-    color: "white",
-  },
-  featuredCard: {
-    backgroundColor: "#4f46e5",
-    padding: 20,
-    borderRadius: 16,
+  card: {
+    backgroundColor: "rgba(255,255,255,0.15)",
+    padding: 24,
+    borderRadius: 20,
+    width: "100%",
     marginBottom: 30,
   },
-  featuredTitle: {
-    color: "white",
+  cardText: {
     fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  featuredText: {
     color: "white",
-    fontSize: 14,
-  },
-  sectionTitle: {
-    color: "white",
-    fontSize: 18,
     fontWeight: "600",
-    marginBottom: 15,
   },
-  actionsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  actionCard: {
-    backgroundColor: "#1e293b",
-    width: "48%",
-    padding: 20,
-    borderRadius: 16,
-    marginBottom: 15,
-    alignItems: "center",
-  },
-  actionText: {
-    color: "white",
+  cardSub: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.8)",
     marginTop: 8,
-    fontWeight: "500",
+  },
+  button: {
+    backgroundColor: "white",
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 30,
+  },
+  buttonText: {
+    color: "#9333ea",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
