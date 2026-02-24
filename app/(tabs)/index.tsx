@@ -1,86 +1,78 @@
-import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function HomeScreen() {
+  const router = useRouter();
+
   return (
-    <LinearGradient
-      colors={["#4f46e5", "#9333ea", "#ec4899"]}
-      style={styles.container}
-    >
-      <SafeAreaView style={styles.safe}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Welcome</Text>
-          <Text style={styles.names}>Gabe & Sam 🚀</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>ScreenTime</Text>
+        <Text style={styles.subtitle}>
+          Take control of your digital life.
+        </Text>
+      </View>
 
-          <View style={styles.card}>
-            <Text style={styles.cardText}>
-              Your app is officially live.
-            </Text>
-            <Text style={styles.cardSub}>
-              Let’s build something awesome.
-            </Text>
-          </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/my-screen-time")}
+        >
+          <Text style={styles.buttonText}>My Screen Time</Text>
+        </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Get Started</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </LinearGradient>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/compete")}
+        >
+          <Text style={styles.buttonText}>Compete With Friends</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/statistics")}
+        >
+          <Text style={styles.buttonText}>My Statistics</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#0d0d0d",
+    paddingHorizontal: 24,
   },
-  safe: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 24,
+  header: {
+    marginTop: 60,
+    marginBottom: 50,
   },
   title: {
     fontSize: 36,
-    fontWeight: "300",
-    color: "white",
+    fontWeight: "700",
+    color: "#ffffff",
   },
-  names: {
-    fontSize: 42,
-    fontWeight: "bold",
-    color: "white",
-    marginBottom: 40,
-  },
-  card: {
-    backgroundColor: "rgba(255,255,255,0.15)",
-    padding: 24,
-    borderRadius: 20,
-    width: "100%",
-    marginBottom: 30,
-  },
-  cardText: {
-    fontSize: 18,
-    color: "white",
-    fontWeight: "600",
-  },
-  cardSub: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.8)",
+  subtitle: {
+    fontSize: 16,
+    color: "#888888",
     marginTop: 8,
   },
+  buttonContainer: {
+    gap: 20,
+  },
   button: {
-    backgroundColor: "white",
-    paddingVertical: 14,
-    paddingHorizontal: 40,
-    borderRadius: 30,
+    backgroundColor: "#1c1c1e",
+    paddingVertical: 22,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#2c2c2e",
   },
   buttonText: {
-    color: "#9333ea",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: "#ffffff",
+    fontSize: 18,
+    fontWeight: "600",
   },
 });
