@@ -8,7 +8,8 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.greeting}>Welcome Back 👋</Text>
-        <Text style={styles.username}>Gabe</Text>
+        <Text style={styles.username}>Gabe and Sam 
+        </Text>
       </View>
 
       {/* Search Bar */}
