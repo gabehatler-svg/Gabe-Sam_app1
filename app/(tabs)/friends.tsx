@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function FriendsScreen() {
@@ -8,6 +9,7 @@ export default function FriendsScreen() {
   ];
 
   const winner = friends[0];
+  const currentLeague = "Bronze League";
 
   return (
     <View style={styles.container}>
@@ -19,6 +21,15 @@ export default function FriendsScreen() {
           <Text style={styles.subheader}>Today’s Leaderboard</Text>
         </View>
 
+        {/* League Status Card */}
+        <View style={styles.leagueCard}>
+          <Text style={styles.leagueLabel}>Current Tier</Text>
+          <Text style={styles.leagueName}>{currentLeague}</Text>
+          <Text style={styles.leagueDescription}>
+            Win this week to move up. Last place drops.
+          </Text>
+        </View>
+
         {/* Winner Card */}
         <View style={styles.winnerCard}>
           <Text style={styles.winnerLabel}>🏆 Lowest Screen Time Today</Text>
@@ -26,7 +37,7 @@ export default function FriendsScreen() {
           <Text style={styles.winnerTime}>{winner.screenTime}</Text>
         </View>
 
-        {/* Leaderboard List */}
+        {/* Leaderboard */}
         <Text style={styles.sectionTitle}>All Friends</Text>
 
         {friends.map((friend, index) => (
@@ -37,12 +48,30 @@ export default function FriendsScreen() {
           </View>
         ))}
 
-      </ScrollView>
+        {/* Season + Chat Buttons */}
+        <View style={styles.buttonSection}>
 
-      {/* Add Friend Button */}
-      <TouchableOpacity style={styles.addButton}>
-        <Text style={styles.addButtonText}>+ Invite Friend</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.seasonButton}
+            onPress={() => router.push("/season")}
+          >
+            <Text style={styles.seasonButtonText}>
+              View Weekly Season
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.chatButton}
+            onPress={() => router.push("/chat")}
+          >
+            <Text style={styles.chatButtonText}>
+              League Chat
+            </Text>
+          </TouchableOpacity>
+
+        </View>
+
+      </ScrollView>
     </View>
   );
 }
@@ -68,6 +97,31 @@ const styles = StyleSheet.create({
   subheader: {
     color: "#777",
     marginTop: 6,
+  },
+
+  leagueCard: {
+    backgroundColor: "#111",
+    padding: 22,
+    borderRadius: 26,
+    marginBottom: 25,
+  },
+
+  leagueLabel: {
+    color: "#888",
+    fontSize: 13,
+  },
+
+  leagueName: {
+    color: "#22c55e",
+    fontSize: 22,
+    fontWeight: "700",
+    marginTop: 4,
+  },
+
+  leagueDescription: {
+    color: "#666",
+    marginTop: 6,
+    fontSize: 13,
   },
 
   winnerCard: {
@@ -129,15 +183,33 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 
-  addButton: {
-    backgroundColor: "#22c55e",
-    padding: 18,
-    borderRadius: 30,
-    alignItems: "center",
-    marginBottom: 30,
+  buttonSection: {
+    marginTop: 30,
+    marginBottom: 40,
+    gap: 14,
   },
 
-  addButtonText: {
+  seasonButton: {
+    backgroundColor: "#1f1f1f",
+    padding: 18,
+    borderRadius: 24,
+    alignItems: "center",
+  },
+
+  seasonButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+
+  chatButton: {
+    backgroundColor: "#22c55e",
+    padding: 20,
+    borderRadius: 30,
+    alignItems: "center",
+  },
+
+  chatButtonText: {
     color: "#000",
     fontWeight: "700",
     fontSize: 16,
