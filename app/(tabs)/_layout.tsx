@@ -7,18 +7,14 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#0d0d0d",
-          borderTopColor: "#1c1c1e",
-          height: 70,
+          backgroundColor: "#0D0D0D",
+          borderTopWidth: 0,
         },
-        tabBarActiveTintColor: "#ffffff",
-        tabBarInactiveTintColor: "#555555",
-        tabBarLabelStyle: {
-          fontSize: 12,
-          marginBottom: 6,
-        },
+        tabBarActiveTintColor: "#4CD964",
+        tabBarInactiveTintColor: "#777",
       }}
     >
+      {/* LEFT TAB */}
       <Tabs.Screen
         name="index"
         options={{
@@ -29,22 +25,24 @@ export default function TabLayout() {
         }}
       />
 
-      <Tabs.Screen
-        name="statistics"
-        options={{
-          title: "Statistics",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="stats-chart-outline" size={size} color={color} />
-          ),
-        }}
-      />
-
+      {/* MIDDLE TAB */}
       <Tabs.Screen
         name="friends"
         options={{
           title: "Friends",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
+      {/* RIGHT TAB */}
+      <Tabs.Screen
+        name="statistics"
+        options={{
+          title: "My Statistics",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="bar-chart-outline" size={size} color={color} />
           ),
         }}
       />
