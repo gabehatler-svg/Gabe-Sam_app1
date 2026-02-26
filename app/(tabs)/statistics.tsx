@@ -261,8 +261,44 @@ export default function StatisticsScreen() {
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
-          {/* ── Header ── */}
-          <Animated.View style={[styles.header, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+          {/* ── Profile Header ── */}
+          <Animated.View style={[styles.profileCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+            <View style={styles.profileAvatarWrap}>
+              <Text style={styles.profileAvatarEmoji}>🧑‍💻</Text>
+            </View>
+            <View style={styles.profileInfo}>
+              <Text style={styles.profileName}>Gabe</Text>
+              <View style={styles.profileBadgeRow}>
+                <View style={styles.profileSilverBadge}>
+                  <Text style={styles.profileSilverText}>🥈 Silver</Text>
+                </View>
+                <View style={styles.profileGemBadge}>
+                  <Text style={styles.profileGemText}>💎 12 gems</Text>
+                </View>
+              </View>
+            </View>
+          </Animated.View>
+
+          {/* ── Achievements ── */}
+          <View style={styles.achievementsCard}>
+            <Text style={styles.achievementsTitle}>Achievements</Text>
+            <View style={styles.achievementsRow}>
+              {[
+                { emoji: '🏅', label: 'Top 3' },
+                { emoji: '🔥', label: 'On Fire' },
+                { emoji: '📚', label: 'Bookworm' },
+                { emoji: '🧘', label: 'Zen Mode' },
+              ].map(a => (
+                <View key={a.label} style={styles.achievement}>
+                  <Text style={styles.achieveEmoji}>{a.emoji}</Text>
+                  <Text style={styles.achieveLabel}>{a.label}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+
+          {/* ── Section divider ── */}
+          <Animated.View style={[styles.header, { opacity: fadeAnim }]}>
             <Text style={styles.headerTitle}>Statistics</Text>
             <Text style={styles.headerSub}>Your screen time performance</Text>
           </Animated.View>
@@ -388,7 +424,26 @@ const styles = StyleSheet.create({
   root:   { flex: 1, backgroundColor: '#080810' },
   scroll: { paddingHorizontal: 18, paddingTop: 6 },
 
-  header:      { marginTop: 10, marginBottom: 18 },
+  // Profile header
+  profileCard:        { flexDirection: 'row', alignItems: 'center', backgroundColor: '#12121E', borderRadius: 20, padding: 16, marginBottom: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  profileAvatarWrap:  { width: 64, height: 64, borderRadius: 32, backgroundColor: 'rgba(255,255,255,0.06)', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#4D9FFF44', marginRight: 14 },
+  profileAvatarEmoji: { fontSize: 34 },
+  profileInfo:        { flex: 1 },
+  profileName:        { color: '#FFF', fontSize: 22, fontWeight: '800', letterSpacing: -0.5, marginBottom: 6 },
+  profileBadgeRow:    { flexDirection: 'row', gap: 8 },
+  profileSilverBadge: { backgroundColor: 'rgba(192,192,192,0.12)', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1, borderColor: 'rgba(192,192,192,0.2)' },
+  profileSilverText:  { color: '#C0C0C0', fontSize: 12, fontWeight: '700' },
+  profileGemBadge:    { backgroundColor: 'rgba(136,238,255,0.08)', borderRadius: 12, paddingHorizontal: 10, paddingVertical: 4, borderWidth: 1, borderColor: 'rgba(136,238,255,0.2)' },
+  profileGemText:     { color: '#88EEFF', fontSize: 12, fontWeight: '700' },
+  // Achievements
+  achievementsCard:   { backgroundColor: '#12121E', borderRadius: 20, padding: 16, marginBottom: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  achievementsTitle:  { color: '#FFF', fontSize: 15, fontWeight: '700', marginBottom: 12 },
+  achievementsRow:    { flexDirection: 'row', justifyContent: 'space-around' },
+  achievement:        { alignItems: 'center', gap: 5 },
+  achieveEmoji:       { fontSize: 30 },
+  achieveLabel:       { color: 'rgba(255,255,255,0.4)', fontSize: 11, fontWeight: '600' },
+
+  header:      { marginTop: 4, marginBottom: 14 },
   headerTitle: { color: '#FFF', fontSize: 28, fontWeight: '800', letterSpacing: -0.7 },
   headerSub:   { color: 'rgba(255,255,255,0.3)', fontSize: 13, marginTop: 3 },
 

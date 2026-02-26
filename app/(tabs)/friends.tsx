@@ -5,6 +5,7 @@ import {
     Modal,
     SafeAreaView,
     ScrollView,
+    Share,
     StatusBar,
     StyleSheet,
     Text,
@@ -17,7 +18,7 @@ const { width } = Dimensions.get('window');
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Rank = 'BRONZE' | 'SILVER' | 'GOLD' | 'DIAMOND';
-type Tab = 'friends' | 'requests' | 'search';
+type Tab = 'friends' | 'requests' | 'search' | 'leagues';
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const ME = {
@@ -52,6 +53,102 @@ const RANK_CONFIG: Record<Rank, { color: string; bg: string; label: string; icon
 };
 
 const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+// ─── Leagues Tab ──────────────────────────────────────────────────────────────
+const INVITE_CODE = 'ZONE-4829';
+const MY_LEAGUES = [
+  { id: 'l1', name: 'The Boys',       members: 5, rank: '#2', season: 'Season 7' },
+  { id: 'l2', name: 'No Phone Zone',  members: 3, rank: '#1', season: 'Season 7' },
+];
+
+function LeaguesTab() {
+  const [creating, setCreating] = useState(false);
+  const [leagueName, setLeagueName] = useState('');
+  const [created, setCreated] = useState(false);
+
+  const handleShare = async () => {
+    try {
+      await Share.share({ message: `Join my league on Zone! Code: ${INVITE_CODE}` });
+    } catch {}
+  };
+
+  if (created) {
+    return (
+      <View style={styles.leagueDone}>
+        <Text style={styles.leagueDoneEmoji}>🏆</Text>
+        <Text style={styles.leagueDoneTitle}>{leagueName}{'\n'}is live!</Text>
+        <Text style={styles.leagueDoneSub}>Share code <Text style={styles.leagueDoneCode}>{INVITE_CODE}</Text> to invite friends.</Text>
+        <TouchableOpacity style={styles.leagueShareBtn} onPress={handleShare}>
+          <Text style={styles.leagueShareBtnText}>Share Invite Code</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.leagueDoneBack} onPress={() => { setCreated(false); setCreating(false); setLeagueName(''); }}>
+          <Text style={styles.leagueDoneBackText}>Back to Leagues</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (creating) {
+    return (
+      <View style={styles.leagueCreate}>
+        <TouchableOpacity onPress={() => setCreating(false)} style={styles.leagueBackBtn}>
+          <Text style={styles.leagueBackBtnText}>← Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.leagueCreateEmoji}>🏆</Text>
+        <Text style={styles.leagueCreateTitle}>Name your league</Text>
+        <Text style={styles.leagueCreateSub}>Give your crew a name everyone will see each season.</Text>
+        <TextInput
+          style={styles.leagueInput}
+          placeholder="e.g. The Boys, Squad Goals..."
+          placeholderTextColor="rgba(255,255,255,0.2)"
+          value={leagueName}
+          onChangeText={setLeagueName}
+          maxLength={30}
+          autoFocus
+        />
+        <View style={styles.leagueSuggestions}>
+          {['The Boys', 'Grind Season', 'No Phone Zone', 'Touch Grass FC'].map(s => (
+            <TouchableOpacity key={s} style={styles.leagueSuggChip} onPress={() => setLeagueName(s)}>
+              <Text style={styles.leagueSuggChipText}>{s}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <TouchableOpacity
+          style={[styles.leaguePrimaryBtn, !leagueName.trim() && styles.leaguePrimaryBtnDisabled]}
+          onPress={() => leagueName.trim() && setCreated(true)}
+          disabled={!leagueName.trim()}
+        >
+          <Text style={styles.leaguePrimaryBtnText}>Create League 🚀</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  return (
+    <View>
+      {/* Create button */}
+      <TouchableOpacity style={styles.createLeagueBtn} onPress={() => setCreating(true)}>
+        <Text style={styles.createLeagueBtnIcon}>+</Text>
+        <Text style={styles.createLeagueBtnText}>Create a League</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.leagueSectionLabel}>YOUR LEAGUES</Text>
+
+      {MY_LEAGUES.map(league => (
+        <View key={league.id} style={styles.leagueCard}>
+          <View style={styles.leagueCardIcon}>
+            <Text style={{ fontSize: 22 }}>🏆</Text>
+          </View>
+          <View style={{ flex: 1, marginLeft: 12 }}>
+            <Text style={styles.leagueCardName}>{league.name}</Text>
+            <Text style={styles.leagueCardSub}>{league.members} members · {league.season}</Text>
+          </View>
+          <Text style={styles.leagueCardRank}>{league.rank}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
 
 // ─── H2H Modal ────────────────────────────────────────────────────────────────
 function H2HModal({ friend, onClose }: { friend: typeof FRIENDS[0] | null; onClose: () => void }) {
@@ -267,7 +364,7 @@ export default function FriendsScreen() {
 
         {/* Tab bar */}
         <View style={styles.tabRow}>
-          {(['friends', 'requests', 'search'] as Tab[]).map(t => (
+          {(['friends', 'requests', 'search', 'leagues'] as Tab[]).map(t => (
             <TouchableOpacity
               key={t}
               style={[styles.tabBtn, tab === t && styles.tabBtnActive]}
@@ -277,6 +374,7 @@ export default function FriendsScreen() {
                 {t === 'friends'  && 'Friends'}
                 {t === 'requests' && `Requests${pendingCount > 0 ? ` (${pendingCount})` : ''}`}
                 {t === 'search'   && 'Search'}
+                {t === 'leagues'  && 'Leagues'}
               </Text>
             </TouchableOpacity>
           ))}
@@ -319,6 +417,9 @@ export default function FriendsScreen() {
               )}
             </>
           )}
+
+          {/* ── Leagues ── */}
+          {tab === 'leagues' && <LeaguesTab />}
 
           {/* ── Search ── */}
           {tab === 'search' && (
@@ -449,6 +550,43 @@ const styles = StyleSheet.create({
   emptyEmoji: { fontSize: 44, marginBottom: 12 },
   emptyTitle: { color: '#FFF', fontSize: 18, fontWeight: '700', marginBottom: 6 },
   emptySub:   { color: 'rgba(255,255,255,0.3)', fontSize: 14, textAlign: 'center', lineHeight: 20 },
+
+  // Leagues Tab
+  createLeagueBtn:      { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(168,255,120,0.08)', borderRadius: 16, padding: 16, marginBottom: 20, borderWidth: 1, borderColor: 'rgba(168,255,120,0.2)' },
+  createLeagueBtnIcon:  { color: '#A8FF78', fontSize: 22, fontWeight: '800', marginRight: 10 },
+  createLeagueBtnText:  { color: '#A8FF78', fontSize: 15, fontWeight: '700' },
+  leagueSectionLabel:   { color: 'rgba(255,255,255,0.25)', fontSize: 11, fontWeight: '700', letterSpacing: 1, marginBottom: 10 },
+  leagueCard:           { flexDirection: 'row', alignItems: 'center', backgroundColor: '#12121E', borderRadius: 16, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  leagueCardIcon:       { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.06)', alignItems: 'center', justifyContent: 'center' },
+  leagueCardName:       { color: '#FFF', fontSize: 15, fontWeight: '700' },
+  leagueCardSub:        { color: 'rgba(255,255,255,0.3)', fontSize: 12, marginTop: 1 },
+  leagueCardRank:       { color: '#A8FF78', fontSize: 14, fontWeight: '800' },
+
+  // Create League flow
+  leagueCreate:         { paddingTop: 10 },
+  leagueBackBtn:        { marginBottom: 14 },
+  leagueBackBtnText:    { color: 'rgba(255,255,255,0.35)', fontSize: 14, fontWeight: '600' },
+  leagueCreateEmoji:    { fontSize: 44, textAlign: 'center', marginBottom: 12 },
+  leagueCreateTitle:    { color: '#FFF', fontSize: 26, fontWeight: '800', textAlign: 'center', marginBottom: 8, letterSpacing: -0.6 },
+  leagueCreateSub:      { color: 'rgba(255,255,255,0.4)', fontSize: 14, textAlign: 'center', lineHeight: 20, marginBottom: 20 },
+  leagueInput:          { backgroundColor: '#12121E', borderRadius: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', color: '#FFF', fontSize: 17, fontWeight: '600', padding: 16, marginBottom: 12 },
+  leagueSuggestions:    { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 24 },
+  leagueSuggChip:       { backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
+  leagueSuggChipText:   { color: 'rgba(255,255,255,0.5)', fontSize: 13, fontWeight: '600' },
+  leaguePrimaryBtn:     { backgroundColor: '#A8FF78', borderRadius: 16, paddingVertical: 16, alignItems: 'center' },
+  leaguePrimaryBtnDisabled: { backgroundColor: 'rgba(168,255,120,0.25)' },
+  leaguePrimaryBtnText: { color: '#080810', fontSize: 16, fontWeight: '800' },
+
+  // Done state
+  leagueDone:           { alignItems: 'center', paddingTop: 40 },
+  leagueDoneEmoji:      { fontSize: 72, marginBottom: 16 },
+  leagueDoneTitle:      { color: '#FFF', fontSize: 30, fontWeight: '800', textAlign: 'center', marginBottom: 12, lineHeight: 36, letterSpacing: -0.8 },
+  leagueDoneSub:        { color: 'rgba(255,255,255,0.4)', fontSize: 14, textAlign: 'center', marginBottom: 24, lineHeight: 22 },
+  leagueDoneCode:       { color: '#A8FF78', fontWeight: '800', fontSize: 16, letterSpacing: 2 },
+  leagueShareBtn:       { backgroundColor: '#A8FF78', borderRadius: 16, paddingVertical: 14, paddingHorizontal: 32, marginBottom: 12 },
+  leagueShareBtnText:   { color: '#080810', fontSize: 15, fontWeight: '800' },
+  leagueDoneBack:       { padding: 12 },
+  leagueDoneBackText:   { color: 'rgba(255,255,255,0.3)', fontSize: 14, fontWeight: '600' },
 
   // H2H Modal
   modalOverlay:{ flex: 1, backgroundColor: 'rgba(0,0,0,0.75)', justifyContent: 'flex-end' },
