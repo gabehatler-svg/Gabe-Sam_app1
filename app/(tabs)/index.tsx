@@ -1,48 +1,75 @@
+import { useState } from "react";
 import {
+  Modal,
   SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
+} from "react-native";
 
-const leaderboardData = [
-  { rank: 1, name: 'Alex',       emoji: '🧢', pts: 520, medal: '🥇', pct: 1.0,  isYou: false },
-  { rank: 2, name: 'Gabe (you)', emoji: '⭐', pts: 340, medal: '🥈', pct: 0.65, isYou: true  },
-  { rank: 3, name: 'Jordan',     emoji: '🎸', pts: 290, medal: '🥈', pct: 0.56, isYou: false },
-  { rank: 4, name: 'Sam',        emoji: '🎮', pts: 210, medal: '🥉', pct: 0.40, isYou: false },
-  { rank: 5, name: 'Tyler',      emoji: '🏀', pts: 160, medal: '🥉', pct: 0.31, isYou: false },
+const CREATE_STEPS = [
+  {
+    title: "Name your league",
+    subtitle: "Give your crew a name. This is what everyone will see each season.",
+    placeholder: "e.g. The Boys, Squad Goals...",
+    suggestions: ["The Boys", "Grind Season", "No Phone Zone", "Touch Grass FC"],
+  },
+  {
+    title: "Invite your crew",
+    subtitle: "Add friends to your league so you can compete together.",
+    placeholder: "Search friends...",
+    suggestions: [],
+  },
+  {
+    title: "Set the rules",
+    subtitle: "Customize how your league runs each season.",
+    placeholder: "",
+    suggestions: [],
+  },
 ];
 
-const mostOpenedData = [
-  { name: 'TikTok',      emoji: '🎵', opens: 14, pct: 1.0  },
-  { name: 'Instagram',   emoji: '📸', opens: 9,  pct: 0.64 },
-  { name: 'YouTube',     emoji: '▶️', opens: 6,  pct: 0.43 },
-  { name: 'X (Twitter)', emoji: '✖️', opens: 4,  pct: 0.29 },
+const leaderboard = [
+  { rank: 1, name: "Alex", pts: 520, emoji: "🧢", crown: true },
+  { rank: 2, name: "Gabe (you)", pts: 340, emoji: "⭐", you: true },
+  { rank: 3, name: "Jordan", pts: 290, emoji: "🎸" },
+  { rank: 4, name: "Sam", pts: 210, emoji: "🎮" },
+  { rank: 5, name: "Tyler", pts: 160, emoji: "🏀" },
 ];
 
-const mostUsedData = [
-  { name: 'Kindle',     emoji: '📚', mins: 47, pct: 1.0  },
-  { name: 'Meditation', emoji: '🧘', mins: 38, pct: 0.81 },
-  { name: 'Bible App',  emoji: '📖', mins: 22, pct: 0.47 },
-  { name: 'Duolingo',   emoji: '🦜', mins: 15, pct: 0.32 },
-];
+const MAX_PTS = 520;
 
 export default function HomeScreen() {
+  const [showModal, setShowModal] = useState(false);
+  const [step, setStep] = useState(0);
+  const [leagueName, setLeagueName] = useState("");
+
+  const openModal = () => {
+    setStep(0);
+    setLeagueName("");
+    setShowModal(true);
+  };
+
   return (
     <SafeAreaView style={styles.safe}>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 32 }}>
 
-        {/* ── Header ── */}
+        {/* Header */}
         <View style={styles.header}>
-          <View style={styles.titleGroup}>
-            <TouchableOpacity style={styles.profileAvatar}>
-              <Text style={styles.profileEmoji}>🧑‍💻</Text>
+          <View style={styles.headerLeft}>
+            <TouchableOpacity onPress={openModal} style={styles.avatarWrapper}>
+              <View style={styles.avatar}>
+                <Text style={styles.avatarPlus}>+</Text>
+              </View>
+              <Text style={styles.avatarLabel}>create new league</Text>
             </TouchableOpacity>
             <View>
-              <Text style={styles.groupTitle}>The Boys</Text>
-              <View style={styles.metaRow}>
+              <Text style={styles.leagueName}>The Boys</Text>
+              <View style={styles.headerMeta}>
                 <View style={styles.seasonBadge}>
                   <Text style={styles.seasonText}>Season 7</Text>
                 </View>
@@ -50,349 +77,292 @@ export default function HomeScreen() {
               </View>
             </View>
           </View>
-          <View style={styles.currencyGroup}>
-            <View style={styles.currencyPill}>
-              <Text style={styles.lightningText}>⚡ 340</Text>
+          <View style={styles.headerRight}>
+            <View style={styles.badge}>
+              <Text style={styles.badgeTextYellow}>⚡ 340</Text>
             </View>
-            <View style={styles.currencyPill}>
-              <Text style={styles.gemText}>💎 12</Text>
+            <View style={styles.badge}>
+              <Text style={styles.badgeTextBlue}>💎 12</Text>
             </View>
           </View>
         </View>
 
-        {/* ── Stats Card ── */}
+        {/* Stats Card */}
         <View style={styles.card}>
-          <View style={styles.rankRow}>
-            <View style={styles.rankInfo}>
-              <View style={styles.rankIcon}>
-                <Text style={{ fontSize: 24 }}>⭐</Text>
+          <View style={styles.statsTop}>
+            <View style={styles.statsLeft}>
+              <View style={styles.starCircle}>
+                <Text style={{ fontSize: 20 }}>⭐</Text>
               </View>
               <View>
-                <Text style={styles.rankLabel}>You · #2 in league</Text>
-                <View style={styles.silverBadge}>
-                  <Text style={styles.silverText}>🥈 Silver</Text>
-                </View>
+                <Text style={styles.rankText}>You · #2 in league</Text>
+                <Text style={styles.silverText}>🥈 Silver</Text>
               </View>
             </View>
-            <View style={styles.ptsToday}>
-              <Text style={styles.ptsTodayNum}>340</Text>
-              <Text style={styles.ptsTodayLabel}>pts today</Text>
+            <View style={styles.statsRight}>
+              <Text style={styles.bigPts}>340</Text>
+              <Text style={styles.ptsLabel}>pts today</Text>
             </View>
           </View>
+          <View style={styles.statsDivider} />
           <View style={styles.statsRow}>
-            <View style={styles.statCell}>
-              <Text style={[styles.statVal, { color: '#4ade80' }]}>+90</Text>
-              <Text style={styles.statLbl}>EARNED</Text>
+            <View style={styles.statItem}>
+              <Text style={styles.earned}>+90</Text>
+              <Text style={styles.statLabel}>EARNED</Text>
             </View>
-            <View style={[styles.statCell, styles.statCellBorder]}>
-              <Text style={[styles.statVal, { color: '#f87171' }]}>-40</Text>
-              <Text style={styles.statLbl}>LOST</Text>
+            <View style={styles.statItem}>
+              <Text style={styles.lost}>-40</Text>
+              <Text style={styles.statLabel}>LOST</Text>
             </View>
-            <View style={styles.statCell}>
-              <Text style={[styles.statVal, { color: '#4ade80' }]}>1420</Text>
-              <Text style={styles.statLbl}>SEASON</Text>
+            <View style={styles.statItem}>
+              <Text style={styles.season}>1420</Text>
+              <Text style={styles.statLabel}>SEASON</Text>
             </View>
           </View>
         </View>
 
-        {/* ── Leaderboard Card ── */}
-        <View style={styles.card}>
+        {/* Leaderboard */}
+        <View style={[styles.card, { marginTop: 12 }]}>
           <View style={styles.lbHeader}>
-            <Text style={styles.cardTitle}>Leaderboard</Text>
-            <View style={styles.tabGroup}>
-              <TouchableOpacity style={[styles.tabBtn, styles.tabBtnActive]}>
-                <Text style={styles.tabBtnActiveText}>Today</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.tabBtn}>
-                <Text style={styles.tabBtnText}>Season</Text>
-              </TouchableOpacity>
+            <Text style={styles.lbTitle}>Leaderboard</Text>
+            <View style={styles.lbTabs}>
+              <View style={styles.lbTabActive}>
+                <Text style={styles.lbTabActiveText}>Today</Text>
+              </View>
+              <View style={styles.lbTabInactive}>
+                <Text style={styles.lbTabInactiveText}>Season</Text>
+              </View>
             </View>
           </View>
-          {leaderboardData.map((item) => (
+
+          {leaderboard.map((p) => (
             <View
-              key={item.rank}
+              key={p.rank}
               style={[
-                styles.lbEntry,
-                item.isYou && styles.lbEntryYou,
-                item.rank === 1 && styles.lbEntryFirst,
+                styles.lbRow,
+                p.crown && styles.lbRowCrown,
+                p.you && styles.lbRowYou,
               ]}
             >
-              <View style={styles.rankNumBox}>
-                {item.rank === 1
-                  ? <Text style={{ fontSize: 20 }}>👑</Text>
-                  : <Text style={styles.rankNum}>#{item.rank}</Text>
-                }
+              {p.crown ? (
+                <Text style={{ fontSize: 22, width: 30 }}>👑</Text>
+              ) : (
+                <Text style={styles.lbRank}>#{p.rank}</Text>
+              )}
+              <View style={styles.lbAvatar}>
+                <Text style={{ fontSize: 18 }}>{p.emoji}</Text>
               </View>
-              <View style={styles.entryAvatar}>
-                <Text style={{ fontSize: 20 }}>{item.emoji}</Text>
-              </View>
-              <View style={styles.entryInfo}>
-                <Text style={[styles.entryName, item.isYou && { color: '#4ade80' }]}>
-                  {item.name}
-                </Text>
-                <View style={styles.progressBar}>
-                  <View style={[styles.progressFillGreen, { width: `${item.pct * 100}%` }]} />
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.lbName, p.you && { color: "#22c55e" }]}>{p.name}</Text>
+                <View style={styles.barBg}>
+                  <View style={[styles.barFill, { width: `${(p.pts / MAX_PTS) * 100}%` as any }]} />
                 </View>
               </View>
-              <Text style={styles.medalIcon}>{item.medal}</Text>
-              <View style={styles.entryPts}>
-                <Text style={[styles.ptsVal, item.rank === 1 && { color: '#facc15' }]}>
-                  {item.pts}
-                </Text>
-                <Text style={styles.ptsSuffix}>PTS</Text>
+              <Text style={{ fontSize: 14, marginHorizontal: 6 }}>
+                {p.rank === 1 ? "🥇" : p.rank === 2 ? "🥈" : "🥉"}
+              </Text>
+              <View style={{ alignItems: "flex-end", minWidth: 50 }}>
+                <Text style={[styles.lbPts, p.crown && { color: "#facc15" }]}>{p.pts}</Text>
+                <Text style={styles.ptsSmall}>PTS</Text>
               </View>
             </View>
           ))}
         </View>
 
-        {/* ── Today's Activity ── */}
-        <Text style={styles.sectionTitle}>Today's Activity</Text>
-
-        {/* ── Most Opened Card ── */}
-        <View style={styles.card}>
-          <View style={styles.cardHeaderRow}>
-            <View>
-              <Text style={styles.cardTitle}>Most Opened</Text>
-              <Text style={styles.cardSubtitle}>Each open costs –10 pts</Text>
-            </View>
-            <View style={styles.detrimentalBadge}>
-              <Text style={styles.detrimentalText}>🚫 Detrimental</Text>
-            </View>
-          </View>
-
-          {mostOpenedData.map((item) => (
-            <View key={item.name} style={styles.appRow}>
-              <View style={styles.appAvatar}>
-                <Text style={{ fontSize: 20 }}>{item.emoji}</Text>
-              </View>
-              <View style={styles.entryInfo}>
-                <View style={styles.appNameRow}>
-                  <Text style={styles.appName}>{item.name}</Text>
-                  <Text style={styles.opensText}>{item.opens} opens</Text>
-                </View>
-                <View style={styles.progressBar}>
-                  <View style={[styles.progressFillRed, { width: `${item.pct * 100}%` }]} />
-                </View>
-              </View>
-            </View>
-          ))}
-
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total pts lost</Text>
-            <Text style={styles.totalNeg}>–330 pts</Text>
-          </View>
-        </View>
-
-        {/* ── Most Used Card ── */}
-        <View style={styles.card}>
-          <View style={styles.cardHeaderRow}>
-            <View>
-              <Text style={styles.cardTitle}>Most Used</Text>
-              <Text style={styles.cardSubtitle}>10+ mins earns +30 pts</Text>
-            </View>
-            <View style={styles.beneficialBadge}>
-              <Text style={styles.beneficialText}>✅ Beneficial</Text>
-            </View>
-          </View>
-
-          {mostUsedData.map((item) => (
-            <View key={item.name} style={styles.appRow}>
-              <View style={styles.appAvatar}>
-                <Text style={{ fontSize: 20 }}>{item.emoji}</Text>
-              </View>
-              <View style={styles.entryInfo}>
-                <View style={styles.appNameRow}>
-                  <Text style={styles.appName}>{item.name}</Text>
-                  <Text style={styles.minsText}>{item.mins}m</Text>
-                </View>
-                <View style={styles.progressBar}>
-                  <View style={[styles.progressFillGreen, { width: `${item.pct * 100}%` }]} />
-                </View>
-              </View>
-            </View>
-          ))}
-
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total pts earned</Text>
-            <Text style={styles.totalPos}>+300 pts</Text>
-          </View>
-        </View>
-
+        <Text style={styles.activityTitle}>Today's Activity</Text>
       </ScrollView>
+
+      {/* Bottom Nav */}
+      <View style={styles.bottomNav}>
+        {[
+          { icon: "🏠", label: "Home", active: true },
+          { icon: "👥", label: "Friends" },
+          { icon: "🏪", label: "Shop" },
+          { icon: "👤", label: "Profile" },
+          { icon: "📊", label: "Stats" },
+        ].map((item) => (
+          <TouchableOpacity key={item.label} style={styles.navItem}>
+            <Text style={{ fontSize: 22 }}>{item.icon}</Text>
+            <Text style={[styles.navLabel, item.active && { color: "#22c55e" }]}>{item.label}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Create League Modal */}
+      <Modal
+        visible={showModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowModal(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowModal(false)}
+        >
+          <TouchableOpacity activeOpacity={1} style={styles.modalSheet}>
+            {/* Step indicators */}
+            <View style={styles.stepRow}>
+              <View style={styles.stepDots}>
+                {CREATE_STEPS.map((_, i) => (
+                  <View
+                    key={i}
+                    style={[
+                      styles.stepDot,
+                      i <= step && styles.stepDotActive,
+                      i === step && { width: 32 },
+                    ]}
+                  />
+                ))}
+              </View>
+              <Text style={styles.stepLabel}>Step {step + 1} of {CREATE_STEPS.length}</Text>
+            </View>
+
+            <Text style={styles.modalTrophy}>🏆</Text>
+            <Text style={styles.modalTitle}>{CREATE_STEPS[step].title}</Text>
+            <Text style={styles.modalSubtitle}>{CREATE_STEPS[step].subtitle}</Text>
+
+            {step === 0 && (
+              <>
+                <TextInput
+                  value={leagueName}
+                  onChangeText={(t) => setLeagueName(t.slice(0, 30))}
+                  placeholder={CREATE_STEPS[0].placeholder}
+                  placeholderTextColor="#444"
+                  style={styles.input}
+                  maxLength={30}
+                />
+                <Text style={styles.charCount}>{leagueName.length}/30</Text>
+                <View style={styles.suggestions}>
+                  {CREATE_STEPS[0].suggestions.map((s) => (
+                    <TouchableOpacity key={s} onPress={() => setLeagueName(s)} style={styles.chip}>
+                      <Text style={styles.chipText}>{s}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </>
+            )}
+
+            {step === 1 && (
+              <Text style={styles.stepPlaceholder}>Share your invite link or search for friends to add.</Text>
+            )}
+
+            {step === 2 && (
+              <Text style={styles.stepPlaceholder}>Choose season length, scoring rules, and more.</Text>
+            )}
+
+            <TouchableOpacity
+              style={styles.continueBtn}
+              onPress={() => {
+                if (step < CREATE_STEPS.length - 1) setStep(step + 1);
+                else setShowModal(false);
+              }}
+            >
+              <Text style={styles.continueBtnText}>
+                {step < CREATE_STEPS.length - 1 ? "Continue →" : "Create League 🎉"}
+              </Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#111827' },
-  scroll: { flex: 1 },
-  container: { paddingBottom: 20 },
+  safe: { flex: 1, backgroundColor: "#0d1117" },
+  container: { flex: 1, backgroundColor: "#0d1117" },
 
-  // Header
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 10,
+  header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 16, paddingTop: 12 },
+  headerLeft: { flexDirection: "row", alignItems: "center", gap: 12 },
+  avatarWrapper: { alignItems: "center", gap: 4 },
+  avatar: {
+    width: 44, height: 44, borderRadius: 22,
+    backgroundColor: "#1e2530", borderWidth: 2, borderColor: "#3b8df1",
+    alignItems: "center", justifyContent: "center",
   },
-  titleGroup: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  profileAvatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#374151',
-    borderWidth: 2,
-    borderColor: '#4f8ef7',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  profileEmoji: { fontSize: 22 },
-  groupTitle: { fontSize: 24, fontWeight: '900', color: '#fff' },
-  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 3 },
-  seasonBadge: {
-    backgroundColor: '#1a3a1a',
-    borderWidth: 1.5,
-    borderColor: '#4ade80',
-    borderRadius: 20,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-  },
-  seasonText: { color: '#4ade80', fontSize: 11, fontWeight: '700' },
-  timerText: { color: '#9ca3af', fontSize: 11, fontWeight: '600' },
-  currencyGroup: { flexDirection: 'row', gap: 6 },
-  currencyPill: {
-    backgroundColor: '#1f2937',
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-  },
-  lightningText: { color: '#facc15', fontWeight: '800', fontSize: 14 },
-  gemText: { color: '#38bdf8', fontWeight: '800', fontSize: 14 },
+  avatarPlus: { fontSize: 28, color: "#3b8df1", fontWeight: "300", lineHeight: 32 },
+  avatarLabel: { color: "#3b8df1", fontSize: 9, fontWeight: "600", textAlign: "center" },
+  leagueName: { color: "#fff", fontSize: 22, fontWeight: "800" },
+  headerMeta: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 2 },
+  seasonBadge: { backgroundColor: "#22c55e", borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 },
+  seasonText: { color: "#000", fontSize: 11, fontWeight: "700" },
+  timerText: { color: "#aaa", fontSize: 12 },
+  headerRight: { flexDirection: "row", gap: 8 },
+  badge: { backgroundColor: "#1e2530", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6 },
+  badgeTextYellow: { color: "#facc15", fontWeight: "700" },
+  badgeTextBlue: { color: "#38bdf8", fontWeight: "700" },
 
-  // Cards
-  card: {
-    backgroundColor: '#1f2937',
-    borderRadius: 16,
-    marginHorizontal: 16,
-    marginBottom: 14,
-    padding: 16,
-  },
-  cardTitle: { fontSize: 20, fontWeight: '900', color: '#fff' },
-  cardHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 14,
-  },
-  cardSubtitle: { color: '#9ca3af', fontSize: 12, marginTop: 3 },
+  card: { marginHorizontal: 16, backgroundColor: "#161d27", borderRadius: 16, padding: 16 },
+  statsTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  statsLeft: { flexDirection: "row", alignItems: "center", gap: 10 },
+  starCircle: { width: 36, height: 36, borderRadius: 18, backgroundColor: "#1e2a3a", alignItems: "center", justifyContent: "center" },
+  rankText: { color: "#22c55e", fontWeight: "700", fontSize: 13 },
+  silverText: { color: "#aaa", fontSize: 12, marginTop: 2 },
+  statsRight: { alignItems: "flex-end" },
+  bigPts: { color: "#fff", fontSize: 36, fontWeight: "900" },
+  ptsLabel: { color: "#aaa", fontSize: 12 },
+  statsDivider: { height: 1, backgroundColor: "#1e2c3d", marginVertical: 14 },
+  statsRow: { flexDirection: "row", justifyContent: "space-around" },
+  statItem: { alignItems: "center" },
+  earned: { color: "#22c55e", fontWeight: "700", fontSize: 18 },
+  lost: { color: "#f87171", fontWeight: "700", fontSize: 18 },
+  season: { color: "#22c55e", fontWeight: "700", fontSize: 18 },
+  statLabel: { color: "#666", fontSize: 11, marginTop: 2 },
 
-  // Stats
-  rankRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 14,
-  },
-  rankInfo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  rankIcon: {
-    width: 48, height: 48, borderRadius: 24,
-    backgroundColor: '#374151', alignItems: 'center', justifyContent: 'center',
-  },
-  rankLabel: { color: '#4ade80', fontWeight: '700', fontSize: 14 },
-  silverBadge: {
-    backgroundColor: '#374151', borderRadius: 20,
-    paddingHorizontal: 8, paddingVertical: 3,
-    marginTop: 3, alignSelf: 'flex-start',
-  },
-  silverText: { color: '#d1d5db', fontSize: 12, fontWeight: '700' },
-  ptsToday: { alignItems: 'flex-end' },
-  ptsTodayNum: { fontSize: 40, fontWeight: '900', color: '#fff', lineHeight: 44 },
-  ptsTodayLabel: { color: '#9ca3af', fontSize: 12, fontWeight: '600' },
-  statsRow: {
-    flexDirection: 'row', backgroundColor: '#374151',
-    borderRadius: 10, overflow: 'hidden',
-  },
-  statCell: {
-    flex: 1, backgroundColor: '#1f2937',
-    paddingVertical: 10, alignItems: 'center',
-  },
-  statCellBorder: { borderLeftWidth: 1, borderRightWidth: 1, borderColor: '#374151' },
-  statVal: { fontSize: 20, fontWeight: '800' },
-  statLbl: { color: '#9ca3af', fontSize: 10, fontWeight: '700', letterSpacing: 0.8, marginTop: 2 },
+  lbHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 14 },
+  lbTitle: { color: "#fff", fontSize: 20, fontWeight: "800" },
+  lbTabs: { flexDirection: "row", backgroundColor: "#0d1117", borderRadius: 20, overflow: "hidden" },
+  lbTabActive: { backgroundColor: "#22c55e", borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 },
+  lbTabActiveText: { color: "#000", fontWeight: "700", fontSize: 13 },
+  lbTabInactive: { paddingHorizontal: 14, paddingVertical: 6 },
+  lbTabInactiveText: { color: "#666", fontSize: 13 },
 
-  // Leaderboard
-  lbHeader: {
-    flexDirection: 'row', alignItems: 'center',
-    justifyContent: 'space-between', marginBottom: 12,
-  },
-  tabGroup: {
-    flexDirection: 'row', backgroundColor: '#374151',
-    borderRadius: 20, padding: 3, gap: 2,
-  },
-  tabBtn: { paddingHorizontal: 14, paddingVertical: 5, borderRadius: 16 },
-  tabBtnActive: { backgroundColor: '#4ade80' },
-  tabBtnActiveText: { color: '#111827', fontWeight: '700', fontSize: 13 },
-  tabBtnText: { color: '#9ca3af', fontWeight: '700', fontSize: 13 },
-  lbEntry: {
-    flexDirection: 'row', alignItems: 'center',
-    gap: 10, paddingHorizontal: 10, paddingVertical: 10,
-    borderRadius: 12, marginBottom: 8,
-  },
-  lbEntryYou: { backgroundColor: '#1a3a1a', borderWidth: 1.5, borderColor: '#4ade80' },
-  lbEntryFirst: { backgroundColor: '#292008', borderWidth: 1.5, borderColor: '#facc15' },
-  rankNumBox: { width: 28, alignItems: 'center' },
-  rankNum: { color: '#9ca3af', fontWeight: '800', fontSize: 13 },
-  entryAvatar: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: '#374151', borderWidth: 2, borderColor: '#4b5563',
-    alignItems: 'center', justifyContent: 'center',
-  },
-  entryInfo: { flex: 1 },
-  entryName: { color: '#fff', fontWeight: '700', fontSize: 15 },
-  progressBar: {
-    height: 5, backgroundColor: '#374151',
-    borderRadius: 3, marginTop: 5, overflow: 'hidden',
-  },
-  progressFillGreen: { height: '100%', backgroundColor: '#4ade80', borderRadius: 3 },
-  progressFillRed: { height: '100%', backgroundColor: '#f87171', borderRadius: 3 },
-  medalIcon: { fontSize: 20 },
-  entryPts: { alignItems: 'flex-end', minWidth: 50 },
-  ptsVal: { fontSize: 20, fontWeight: '900', color: '#fff' },
-  ptsSuffix: { fontSize: 10, fontWeight: '700', color: '#9ca3af' },
+  lbRow: { flexDirection: "row", alignItems: "center", gap: 10, padding: 10, borderRadius: 12, marginBottom: 6, borderWidth: 1, borderColor: "transparent" },
+  lbRowCrown: { backgroundColor: "rgba(234,179,8,0.12)", borderColor: "rgba(234,179,8,0.35)" },
+  lbRowYou: { backgroundColor: "rgba(34,197,94,0.12)", borderColor: "rgba(34,197,94,0.35)" },
+  lbRank: { color: "#666", fontWeight: "700", width: 28 },
+  lbAvatar: { width: 36, height: 36, borderRadius: 18, backgroundColor: "#1e2a3a", alignItems: "center", justifyContent: "center" },
+  lbName: { color: "#fff", fontWeight: "700", fontSize: 15 },
+  barBg: { height: 4, backgroundColor: "#0d1117", borderRadius: 2, marginTop: 4, overflow: "hidden" },
+  barFill: { height: "100%", backgroundColor: "#22c55e", borderRadius: 2 },
+  lbPts: { color: "#fff", fontWeight: "800", fontSize: 18 },
+  ptsSmall: { color: "#666", fontSize: 10 },
 
-  // Section title
-  sectionTitle: {
-    fontSize: 18, fontWeight: '900', color: '#e5e7eb',
-    paddingHorizontal: 16, marginBottom: 10,
-  },
+  activityTitle: { color: "#fff", fontWeight: "800", fontSize: 18, padding: 16 },
 
-  // App rows
-  detrimentalBadge: {
-    backgroundColor: '#3b0f0f', borderWidth: 1.5, borderColor: '#f87171',
-    borderRadius: 20, paddingHorizontal: 10, paddingVertical: 5,
+  bottomNav: {
+    flexDirection: "row", justifyContent: "space-around",
+    backgroundColor: "#0d1117", borderTopWidth: 1, borderTopColor: "#1a2030",
+    paddingTop: 10, paddingBottom: 20,
   },
-  detrimentalText: { color: '#f87171', fontSize: 12, fontWeight: '700' },
-  beneficialBadge: {
-    backgroundColor: '#1a3a1a', borderWidth: 1.5, borderColor: '#4ade80',
-    borderRadius: 20, paddingHorizontal: 10, paddingVertical: 5,
+  navItem: { alignItems: "center", gap: 4 },
+  navLabel: { color: "#666", fontSize: 11 },
+
+  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.75)", justifyContent: "flex-end" },
+  modalSheet: {
+    backgroundColor: "#0d1117", borderTopLeftRadius: 24, borderTopRightRadius: 24,
+    padding: 24, paddingBottom: 48,
   },
-  beneficialText: { color: '#4ade80', fontSize: 12, fontWeight: '700' },
-  appRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12 },
-  appAvatar: {
-    width: 40, height: 40, borderRadius: 10,
-    backgroundColor: '#374151', alignItems: 'center', justifyContent: 'center',
+  stepRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 28 },
+  stepDots: { flexDirection: "row", gap: 6 },
+  stepDot: { height: 8, width: 8, borderRadius: 4, backgroundColor: "#1e2a3a" },
+  stepDotActive: { backgroundColor: "#22c55e" },
+  stepLabel: { color: "#666", fontSize: 13 },
+  modalTrophy: { fontSize: 52, textAlign: "center", marginBottom: 14 },
+  modalTitle: { color: "#fff", fontSize: 26, fontWeight: "900", textAlign: "center", marginBottom: 10 },
+  modalSubtitle: { color: "#666", fontSize: 15, textAlign: "center", lineHeight: 22, marginBottom: 24 },
+
+  input: {
+    backgroundColor: "#161d27", borderRadius: 14, padding: 16,
+    color: "#fff", fontSize: 16, marginBottom: 6,
   },
-  appNameRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
-  appName: { color: '#fff', fontWeight: '700', fontSize: 15 },
-  opensText: { color: '#f87171', fontWeight: '700', fontSize: 14 },
-  minsText: { color: '#4ade80', fontWeight: '700', fontSize: 14 },
-  totalRow: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    marginTop: 4, paddingTop: 10, borderTopWidth: 1, borderTopColor: '#374151',
-  },
-  totalLabel: { color: '#9ca3af', fontSize: 14 },
-  totalNeg: { color: '#f87171', fontWeight: '900', fontSize: 18 },
-  totalPos: { color: '#4ade80', fontWeight: '900', fontSize: 18 },
+  charCount: { color: "#444", fontSize: 12, textAlign: "right", marginBottom: 16 },
+  suggestions: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 24 },
+  chip: { backgroundColor: "#161d27", borderWidth: 1, borderColor: "#1e2a3a", borderRadius: 20, paddingHorizontal: 14, paddingVertical: 8 },
+  chipText: { color: "#fff", fontSize: 14 },
+  stepPlaceholder: { color: "#666", fontSize: 15, textAlign: "center", marginBottom: 28 },
+
+  continueBtn: { backgroundColor: "#22c55e", borderRadius: 14, padding: 18, alignItems: "center" },
+  continueBtnText: { color: "#000", fontSize: 17, fontWeight: "800" },
 });
