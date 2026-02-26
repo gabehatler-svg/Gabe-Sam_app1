@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useState } from "react";
+=======
+import { router } from 'expo-router';
+>>>>>>> 387514450d00aaf60c84450ea558da62325b38f9
 import {
   Modal,
   SafeAreaView,
@@ -121,6 +125,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
+<<<<<<< HEAD
         {/* Leaderboard */}
         <View style={[styles.card, { marginTop: 12 }]}>
           <View style={styles.lbHeader}>
@@ -132,6 +137,40 @@ export default function HomeScreen() {
               <View style={styles.lbTabInactive}>
                 <Text style={styles.lbTabInactiveText}>Season</Text>
               </View>
+=======
+        {/* ── My Leagues ── */}
+        <TouchableOpacity
+          style={styles.leaguesCard}
+          onPress={() => router.push('/(tabs)/friends')}
+          activeOpacity={0.8}
+        >
+          <View style={styles.leaguesLeft}>
+            <View style={styles.leaguesIconWrap}>
+              <Text style={{ fontSize: 26 }}>🏆</Text>
+            </View>
+            <View>
+              <Text style={styles.leaguesTitle}>My Leagues</Text>
+              <Text style={styles.leaguesSub}>The Boys · No Phone Zone</Text>
+            </View>
+          </View>
+          <View style={styles.leaguesRight}>
+            <Text style={styles.leaguesRank}>#2</Text>
+            <Text style={styles.leaguesArrow}>›</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* ── Leaderboard Card ── */}
+        <View style={styles.card}>
+          <View style={styles.lbHeader}>
+            <Text style={styles.cardTitle}>Friends Leaderboard</Text>
+            <View style={styles.tabGroup}>
+              <TouchableOpacity style={[styles.tabBtn, styles.tabBtnActive]}>
+                <Text style={styles.tabBtnActiveText}>Today</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.tabBtn}>
+                <Text style={styles.tabBtnText}>Season</Text>
+              </TouchableOpacity>
+>>>>>>> 387514450d00aaf60c84450ea558da62325b38f9
             </View>
           </View>
 
@@ -331,10 +370,32 @@ const styles = StyleSheet.create({
 
   activityTitle: { color: "#fff", fontWeight: "800", fontSize: 18, padding: 16 },
 
+<<<<<<< HEAD
   bottomNav: {
     flexDirection: "row", justifyContent: "space-around",
     backgroundColor: "#0d1117", borderTopWidth: 1, borderTopColor: "#1a2030",
     paddingTop: 10, paddingBottom: 20,
+=======
+  // Leagues card
+  leaguesCard: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    backgroundColor: '#1f2937', borderRadius: 16,
+    marginHorizontal: 16, marginBottom: 14, padding: 14,
+    borderWidth: 1.5, borderColor: '#4ade80',
+  },
+  leaguesLeft:    { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  leaguesIconWrap:{ width: 48, height: 48, borderRadius: 14, backgroundColor: '#1a3a1a', alignItems: 'center', justifyContent: 'center' },
+  leaguesTitle:   { color: '#fff', fontSize: 16, fontWeight: '800' },
+  leaguesSub:     { color: '#9ca3af', fontSize: 12, marginTop: 2 },
+  leaguesRight:   { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  leaguesRank:    { color: '#4ade80', fontSize: 18, fontWeight: '900' },
+  leaguesArrow:   { color: '#4ade80', fontSize: 30, fontWeight: '300', lineHeight: 34 },
+
+  // App rows
+  detrimentalBadge: {
+    backgroundColor: '#3b0f0f', borderWidth: 1.5, borderColor: '#f87171',
+    borderRadius: 20, paddingHorizontal: 10, paddingVertical: 5,
+>>>>>>> 387514450d00aaf60c84450ea558da62325b38f9
   },
   navItem: { alignItems: "center", gap: 4 },
   navLabel: { color: "#666", fontSize: 11 },

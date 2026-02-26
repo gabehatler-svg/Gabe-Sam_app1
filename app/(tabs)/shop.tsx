@@ -75,6 +75,186 @@ const RARITY_CONFIG: Record<Rarity, { color: string; bg: string; label: string; 
   legendary: { color: '#FFB830', bg: 'rgba(255,184,48,0.1)',  label: 'Legendary', glow: 'rgba(255,184,48,0.35)' },
 };
 
+// ─── Avatar Customization ─────────────────────────────────────────────────────
+const SKIN_TONES = ['#FDBCB4', '#F1C27D', '#E0AC69', '#C68642', '#8D5524', '#3B1F0E'];
+const HAIR_COLORS = ['#1C1C1C', '#4a3728', '#8B5E3C', '#C8A951', '#FBBF24', '#EF4444', '#60A5FA', '#A8FF78'];
+const HAIR_STYLES = ['Short', 'Long', 'Curly', 'Afro', 'Bald'] as const;
+type HairStyle = typeof HAIR_STYLES[number];
+
+function darken(hex: string): string {
+  try {
+    return '#' + hex.slice(1).match(/.{2}/g)!
+      .map(c => Math.max(0, parseInt(c, 16) - 35).toString(16).padStart(2, '0')).join('');
+  } catch { return '#c07060'; }
+}
+
+// ─── Cartoon Avatar Figure ────────────────────────────────────────────────────
+function CartoonAvatar({
+  skinTone, hairColor, hairStyle, shirtColor, pantsColor,
+}: { skinTone: string; hairColor: string; hairStyle: HairStyle; shirtColor: string; pantsColor: string }) {
+  return (
+    <View style={av.root}>
+      {hairStyle === 'Short' && <View style={[av.hairShort, { backgroundColor: hairColor }]} />}
+      {hairStyle === 'Curly' && <View style={[av.hairCurly, { backgroundColor: hairColor }]} />}
+      {hairStyle === 'Afro'  && <View style={[av.hairAfro,  { backgroundColor: hairColor }]} />}
+
+      <View style={[av.head, { backgroundColor: skinTone }]}>
+        <View style={[av.earL, { backgroundColor: skinTone }]} />
+        <View style={[av.earR, { backgroundColor: skinTone }]} />
+        {hairStyle === 'Long' && <>
+          <View style={[av.hairLongTop,  { backgroundColor: hairColor }]} />
+          <View style={[av.hairSideL,    { backgroundColor: hairColor }]} />
+          <View style={[av.hairSideR,    { backgroundColor: hairColor }]} />
+        </>}
+        <View style={av.browRow}>
+          <View style={[av.brow, { backgroundColor: hairColor === '#1C1C1C' ? '#1C1C1C' : hairColor }]} />
+          <View style={[av.brow, { backgroundColor: hairColor === '#1C1C1C' ? '#1C1C1C' : hairColor }]} />
+        </View>
+        <View style={av.eyeRow}>
+          <View style={av.eyeWhite}><View style={av.pupil} /></View>
+          <View style={av.eyeWhite}><View style={av.pupil} /></View>
+        </View>
+        <View style={[av.nose, { borderBottomColor: darken(skinTone) }]} />
+        <View style={av.mouth} />
+        <View style={av.cheekL} />
+        <View style={av.cheekR} />
+      </View>
+
+      <View style={[av.neck, { backgroundColor: skinTone }]} />
+
+      <View style={[av.body, { backgroundColor: shirtColor }]}>
+        <View style={[av.armL, { backgroundColor: shirtColor }]}>
+          <View style={[av.hand, { backgroundColor: skinTone }]} />
+        </View>
+        <View style={[av.armR, { backgroundColor: shirtColor }]}>
+          <View style={[av.hand, { backgroundColor: skinTone }]} />
+        </View>
+      </View>
+
+      <View style={av.legsRow}>
+        <View style={[av.leg, { backgroundColor: pantsColor }]}><View style={av.shoe} /></View>
+        <View style={[av.leg, { backgroundColor: pantsColor }]}><View style={av.shoe} /></View>
+      </View>
+    </View>
+  );
+}
+
+const av = StyleSheet.create({
+  root:       { alignItems: 'center' },
+  hairShort:  { width: 62, height: 22, borderTopLeftRadius: 31, borderTopRightRadius: 31, marginBottom: -6, zIndex: 2 },
+  hairCurly:  { width: 70, height: 30, borderTopLeftRadius: 35, borderTopRightRadius: 35, borderBottomLeftRadius: 12, borderBottomRightRadius: 12, marginBottom: -10, zIndex: 2 },
+  hairAfro:   { width: 82, height: 56, borderRadius: 41, marginBottom: -26, zIndex: 2 },
+  hairLongTop:{ position: 'absolute', top: -14, width: 64, height: 22, borderTopLeftRadius: 32, borderTopRightRadius: 32, zIndex: 0 },
+  hairSideL:  { position: 'absolute', left: -7, top: 4, width: 13, height: 88, borderRadius: 7, zIndex: 0 },
+  hairSideR:  { position: 'absolute', right: -7, top: 4, width: 13, height: 88, borderRadius: 7, zIndex: 0 },
+  head:       { width: 64, height: 70, borderRadius: 32, alignItems: 'center', justifyContent: 'center', zIndex: 1, overflow: 'visible' },
+  earL:       { position: 'absolute', left: -9, top: 22, width: 13, height: 18, borderRadius: 7 },
+  earR:       { position: 'absolute', right: -9, top: 22, width: 13, height: 18, borderRadius: 7 },
+  cheekL:     { position: 'absolute', left: 7, bottom: 13, width: 13, height: 7, borderRadius: 7, backgroundColor: 'rgba(255,120,120,0.2)' },
+  cheekR:     { position: 'absolute', right: 7, bottom: 13, width: 13, height: 7, borderRadius: 7, backgroundColor: 'rgba(255,120,120,0.2)' },
+  browRow:    { flexDirection: 'row', gap: 14, marginBottom: 4 },
+  brow:       { width: 13, height: 3, borderRadius: 2 },
+  eyeRow:     { flexDirection: 'row', gap: 12, marginBottom: 5 },
+  eyeWhite:   { width: 14, height: 14, borderRadius: 7, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
+  pupil:      { width: 7, height: 7, borderRadius: 4, backgroundColor: '#1a1a1a' },
+  nose:       { width: 0, height: 0, borderLeftWidth: 5, borderRightWidth: 5, borderBottomWidth: 7, borderLeftColor: 'transparent', borderRightColor: 'transparent', marginBottom: 4 },
+  mouth:      { width: 22, height: 11, borderBottomWidth: 2.5, borderBottomColor: '#c0705a', borderRadius: 11 },
+  neck:       { width: 20, height: 12, marginTop: -2, zIndex: 1 },
+  body:       { width: 74, height: 60, borderTopLeftRadius: 18, borderTopRightRadius: 18, borderBottomLeftRadius: 4, borderBottomRightRadius: 4, marginTop: -4 },
+  armL:       { position: 'absolute', left: -14, top: 4, width: 14, height: 48, borderRadius: 7 },
+  armR:       { position: 'absolute', right: -14, top: 4, width: 14, height: 48, borderRadius: 7 },
+  hand:       { position: 'absolute', bottom: 0, width: 14, height: 14, borderRadius: 7 },
+  legsRow:    { flexDirection: 'row', gap: 4 },
+  leg:        { width: 30, height: 54, borderBottomLeftRadius: 6, borderBottomRightRadius: 6 },
+  shoe:       { position: 'absolute', bottom: 0, width: 34, height: 11, backgroundColor: '#111', borderRadius: 6, left: -2 },
+});
+
+// ─── Avatar Editor Modal ──────────────────────────────────────────────────────
+function AvatarEditorModal({
+  visible, onClose, skinTone, setSkinTone, hairColor, setHairColor, hairStyle, setHairStyle,
+}: {
+  visible: boolean; onClose: () => void;
+  skinTone: string; setSkinTone: (v: string) => void;
+  hairColor: string; setHairColor: (v: string) => void;
+  hairStyle: HairStyle; setHairStyle: (v: HairStyle) => void;
+}) {
+  const slideAnim = useRef(new Animated.Value(500)).current;
+  const fadeAnim  = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (visible) {
+      slideAnim.setValue(500); fadeAnim.setValue(0);
+      Animated.parallel([
+        Animated.spring(slideAnim, { toValue: 0, friction: 8, tension: 65, useNativeDriver: true }),
+        Animated.timing(fadeAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
+      ]).start();
+    }
+  }, [visible]);
+
+  return (
+    <Modal transparent animationType="none" visible={visible} onRequestClose={onClose}>
+      <Animated.View style={[edSt.overlay, { opacity: fadeAnim }]}>
+        <TouchableOpacity style={{ flex: 1 }} onPress={onClose} activeOpacity={1} />
+        <Animated.View style={[edSt.sheet, { transform: [{ translateY: slideAnim }] }]}>
+          <View style={edSt.handle} />
+          <Text style={edSt.title}>Edit Appearance</Text>
+
+          <View style={edSt.previewBox}>
+            <CartoonAvatar skinTone={skinTone} hairColor={hairColor} hairStyle={hairStyle} shirtColor="#4D9FFF" pantsColor="#1a1a2e" />
+          </View>
+
+          <Text style={edSt.label}>SKIN TONE</Text>
+          <View style={edSt.swatchRow}>
+            {SKIN_TONES.map(t => (
+              <TouchableOpacity key={t} style={[edSt.swatch, { backgroundColor: t }, skinTone === t && edSt.swatchOn]} onPress={() => setSkinTone(t)} />
+            ))}
+          </View>
+
+          <Text style={edSt.label}>HAIR STYLE</Text>
+          <View style={edSt.chipRow}>
+            {HAIR_STYLES.map(s => (
+              <TouchableOpacity key={s} style={[edSt.chip, hairStyle === s && edSt.chipOn]} onPress={() => setHairStyle(s)}>
+                <Text style={[edSt.chipTxt, hairStyle === s && edSt.chipTxtOn]}>{s}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {hairStyle !== 'Bald' && <>
+            <Text style={edSt.label}>HAIR COLOR</Text>
+            <View style={edSt.swatchRow}>
+              {HAIR_COLORS.map(c => (
+                <TouchableOpacity key={c} style={[edSt.swatch, { backgroundColor: c }, hairColor === c && edSt.swatchOn]} onPress={() => setHairColor(c)} />
+              ))}
+            </View>
+          </>}
+
+          <TouchableOpacity style={edSt.doneBtn} onPress={onClose}>
+            <Text style={edSt.doneTxt}>Save Look ✓</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </Animated.View>
+    </Modal>
+  );
+}
+
+const edSt = StyleSheet.create({
+  overlay:   { flex: 1, backgroundColor: 'rgba(0,0,0,0.75)', justifyContent: 'flex-end' },
+  sheet:     { backgroundColor: '#12121E', borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 22, paddingBottom: 48, borderWidth: 1, borderColor: 'rgba(255,255,255,0.07)' },
+  handle:    { width: 40, height: 4, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 2, alignSelf: 'center', marginBottom: 16 },
+  title:     { color: '#FFF', fontSize: 20, fontWeight: '800', textAlign: 'center', marginBottom: 14, letterSpacing: -0.5 },
+  previewBox:{ alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: 18, paddingVertical: 16, marginBottom: 18 },
+  label:     { color: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: '700', letterSpacing: 1.2, marginBottom: 10 },
+  swatchRow: { flexDirection: 'row', gap: 10, marginBottom: 16, flexWrap: 'wrap' },
+  swatch:    { width: 36, height: 36, borderRadius: 18, borderWidth: 2.5, borderColor: 'transparent' },
+  swatchOn:  { borderColor: '#A8FF78' },
+  chipRow:   { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 },
+  chip:      { paddingHorizontal: 14, paddingVertical: 7, backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
+  chipOn:    { backgroundColor: '#A8FF78', borderColor: '#A8FF78' },
+  chipTxt:   { color: 'rgba(255,255,255,0.45)', fontSize: 13, fontWeight: '600' },
+  chipTxtOn: { color: '#080810', fontWeight: '700' },
+  doneBtn:   { backgroundColor: '#A8FF78', borderRadius: 16, paddingVertical: 14, alignItems: 'center', marginTop: 6 },
+  doneTxt:   { color: '#080810', fontSize: 16, fontWeight: '800' },
+});
+
 const CATEGORIES: { id: Category; label: string; icon: string }[] = [
   { id: 'all',      label: 'All',      icon: '🛍️' },
   { id: 'avatars',  label: 'Avatars',  icon: '😄' },
@@ -257,6 +437,10 @@ export default function ShopScreen() {
   const [category, setCategory]   = useState<Category>('all');
   const [items, setItems]         = useState<ShopItem[]>(ITEMS);
   const [selectedItem, setSelectedItem] = useState<ShopItem | null>(null);
+  const [skinTone,  setSkinTone]  = useState(SKIN_TONES[1]);
+  const [hairColor, setHairColor] = useState(HAIR_COLORS[0]);
+  const [hairStyle, setHairStyle] = useState<HairStyle>('Short');
+  const [showEditor, setShowEditor] = useState(false);
 
   const fadeAnim  = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(20)).current;
@@ -302,6 +486,33 @@ export default function ShopScreen() {
             <Text style={styles.gemBalanceLabel}>gems</Text>
           </View>
         </Animated.View>
+
+        {/* ── Bitmoji Avatar ── */}
+        <TouchableOpacity
+          style={styles.avatarPreviewCard}
+          onPress={() => setShowEditor(true)}
+          activeOpacity={0.85}
+        >
+          <View style={styles.avatarPreviewInner}>
+            <CartoonAvatar
+              skinTone={skinTone}
+              hairColor={hairColor}
+              hairStyle={hairStyle}
+              shirtColor="#4D9FFF"
+              pantsColor="#1a1a2e"
+            />
+            <View style={styles.avatarPreviewInfo}>
+              <Text style={styles.avatarPreviewName}>Your Avatar</Text>
+              <Text style={styles.avatarPreviewSub}>
+                {items.find(i => i.category === 'avatars' && i.equipped)?.name ?? 'Default'} style
+                {items.find(i => i.category === 'frames' && i.equipped) ? ` · ${items.find(i => i.category === 'frames' && i.equipped)?.name} frame` : ''}
+              </Text>
+              <View style={styles.editAppearanceBtn}>
+                <Text style={styles.editAppearanceTxt}>✏️ Edit Appearance</Text>
+              </View>
+            </View>
+          </View>
+        </TouchableOpacity>
 
         {/* ── Earn gems banner ── */}
         <Animated.View style={[styles.earnBanner, { opacity: fadeAnim }]}>
@@ -368,6 +579,13 @@ export default function ShopScreen() {
         </ScrollView>
       </SafeAreaView>
 
+      <AvatarEditorModal
+        visible={showEditor}
+        onClose={() => setShowEditor(false)}
+        skinTone={skinTone}   setSkinTone={setSkinTone}
+        hairColor={hairColor} setHairColor={setHairColor}
+        hairStyle={hairStyle} setHairStyle={setHairStyle}
+      />
       <ItemModal
         item={selectedItem}
         onClose={() => setSelectedItem(null)}
@@ -399,6 +617,28 @@ const styles = StyleSheet.create({
   gemBalanceIcon:  { fontSize: 18 },
   gemBalanceVal:   { color: '#88EEFF', fontSize: 18, fontWeight: '800', letterSpacing: -0.5 },
   gemBalanceLabel: { color: 'rgba(136,238,255,0.5)', fontSize: 12, fontWeight: '600' },
+
+  // Avatar Preview
+  avatarPreviewCard: {
+    marginHorizontal: 18, marginBottom: 12,
+    backgroundColor: '#12121E',
+    borderRadius: 18, padding: 16,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.07)',
+  },
+  avatarPreviewInner: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
+  avatarFrameRing: {
+    width: 72, height: 72, borderRadius: 36,
+    borderWidth: 3, alignItems: 'center', justifyContent: 'center',
+    marginRight: 14, backgroundColor: 'rgba(255,255,255,0.04)',
+  },
+  avatarPreviewEmoji:   { fontSize: 40 },
+  avatarPreviewInfo:    { flex: 1 },
+  avatarPreviewName:    { color: '#FFF', fontSize: 16, fontWeight: '700', marginBottom: 3 },
+  avatarPreviewSub:     { color: 'rgba(255,255,255,0.4)', fontSize: 13, marginBottom: 3 },
+  avatarPreviewVictory: { color: '#FFB830', fontSize: 12, fontWeight: '600' },
+  avatarPreviewHint:    { color: 'rgba(255,255,255,0.2)', fontSize: 11, textAlign: 'center' },
+  editAppearanceBtn:    { marginTop: 8, backgroundColor: 'rgba(168,255,120,0.1)', borderRadius: 10, paddingHorizontal: 10, paddingVertical: 5, alignSelf: 'flex-start', borderWidth: 1, borderColor: 'rgba(168,255,120,0.2)' },
+  editAppearanceTxt:    { color: '#A8FF78', fontSize: 12, fontWeight: '700' },
 
   // Earn banner
   earnBanner: {

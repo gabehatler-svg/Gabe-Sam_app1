@@ -5,11 +5,11 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#4ade80',
+        tabBarActiveTintColor: '#A8FF78',
         tabBarInactiveTintColor: '#6b7280',
         tabBarStyle: {
-          backgroundColor: '#1f2937',
-          borderTopColor: '#374151',
+          backgroundColor: '#080810',
+          borderTopColor: '#1f2937',
         },
         headerShown: false,
       }}
@@ -24,18 +24,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="stats"
-        options={{
-          title: 'Stats',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bar-chart" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="friends"
         options={{
-          title: 'Friends',
+          title: 'Social',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people" size={size} color={color} />
           ),
@@ -50,6 +41,18 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="statistics"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
+          ),
+        }}
+      />
+      {/* Hide unused standalone tabs from the tab bar */}
+      <Tabs.Screen name="create-league" options={{ href: null }} />
+      <Tabs.Screen name="profile" options={{ href: null }} />
     </Tabs>
   );
 }
